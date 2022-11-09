@@ -6,3 +6,10 @@ export interface dialogParams {
     isError: boolean;
     okButtonText: string;
 }
+
+export type gaterways = {
+    id: string;
+    name: string;
+    sn: string;
+    ipv4: string;
+};
