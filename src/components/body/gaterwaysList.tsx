@@ -135,12 +135,31 @@ function GaterwaysList() {
                                 {/* Repo meta info */}
                                 <div className='hidden flex-shrink-0 flex-col items-end space-y-3 sm:flex'>
                                     <p className='flex space-x-2 text-sm text-gray-500'>
-                                        <span>{gaterway.sn}</span>
-                                        <span aria-hidden='true'>&middot;</span>
-                                        <span>Last deploy 3h ago</span>
+                                        <span className='ml-4 flex flex-shrink-0 items-start space-x-4'>
+                                            <button
+                                                type='button'
+                                                className='rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2'>
+                                                Edit
+                                            </button>
+                                            <span className='text-gray-300' aria-hidden='true'>
+                                                |
+                                            </span>
+                                            <button
+                                                type='button'
+                                                className='rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2'>
+                                                Remove
+                                            </button>
+                                            <span className='text-gray-300' aria-hidden='true'>
+                                                |
+                                            </span>
+                                            <button
+                                                type='button'
+                                                className='rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2'>
+                                                Add devices
+                                            </button>
+                                        </span>
                                     </p>
                                 </div>
-                                <MenuDropdown />
                             </div>
                         </li>
                     ))}
