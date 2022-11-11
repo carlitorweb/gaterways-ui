@@ -100,6 +100,9 @@ function GaterwaysList() {
                 clonedFetchedData.message = fetchedDelateMessage.message;
 
                 setFetchedData(clonedFetchedData);
+
+                // Update the total amount of gaterways in the leftSidebar component
+                context.setAmount(clonedFetchedData.totalOfGaterways);
             })();
         }
     };
