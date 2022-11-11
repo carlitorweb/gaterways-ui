@@ -1,7 +1,8 @@
-import GaterwaysList from './components/body/gaterwaysList';
 import LeftSidebar from './components/body/leftSidebar';
 import RightSidebar from './components/body/rightSidebar';
+import GaterwaysList from './components/gaterways/list';
 import Navbar from './components/header/navbar';
+import { TotalGaterwaysProvider } from './context/providers/totalGaterways';
 
 function App() {
     return (
@@ -15,10 +16,12 @@ function App() {
                 <div className='mx-auto w-full max-w-7xl flex-grow lg:flex xl:px-8'>
                     {/* Left sidebar & main wrapper */}
                     <div className='min-w-0 flex-1 bg-white xl:flex'>
-                        <LeftSidebar />
+                        <TotalGaterwaysProvider>
+                            <LeftSidebar />
 
-                        {/* Gaterway List */}
-                        <GaterwaysList />
+                            {/* Gaterway List */}
+                            <GaterwaysList />
+                        </TotalGaterwaysProvider>
                     </div>
                     {/* Right Sidebar */}
                     <RightSidebar />

@@ -1,6 +1,7 @@
 import { CheckBadgeIcon, RectangleStackIcon } from '@heroicons/react/20/solid';
 import carlitorweb_avatar_src from '../../assets/carlitorweb.jpg';
-import GaterwayForm from './gaterwayForm';
+import Context from '../../context/context';
+import GaterwayForm from '../gaterways/create';
 
 function LeftSidebar() {
     return (
@@ -70,9 +71,15 @@ function LeftSidebar() {
                                         className='h-5 w-5 text-gray-400'
                                         aria-hidden='true'
                                     />
-                                    <span className='text-sm font-medium text-gray-500'>
-                                        8 Projects
-                                    </span>
+                                    <Context.Consumer>
+                                        {contextProps => {
+                                            return (
+                                                <span className='text-sm font-medium text-gray-500'>
+                                                    {contextProps.amount} Gaterways stored
+                                                </span>
+                                            );
+                                        }}
+                                    </Context.Consumer>
                                 </div>
                             </div>
                         </div>
