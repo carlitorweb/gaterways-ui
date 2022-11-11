@@ -1,5 +1,5 @@
 import { ServerIcon, AtSymbolIcon } from '@heroicons/react/24/solid';
-import { gaterways } from '../../body/type';
+import { gaterways } from '../../type';
 
 type Props = {
     gaterway: gaterways;

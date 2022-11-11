@@ -1,6 +1,6 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { useEffect, useState } from 'react';
-import { fetchDeleteGaterwayMessage, fetchGetAllGaterwaysData } from '../body/type';
+import { fetchDeleteGaterwayMessage, fetchGetAllGaterwaysData } from '../type';
 import ListActions from './list/action';
 import ListData from './list/data';
 import SortOptionsMenu from './list/sort';

@@ -1,4 +1,5 @@
-import { gaterways } from '../../body/type';
+import { gaterways } from '../../type';
+import AddDevice from '../devices/add';
 
 type Props = {
     gaterway: gaterways;
@@ -26,11 +27,7 @@ export default function ListActions(props: Props) {
                 <span className='text-gray-300' aria-hidden='true'>
                     |
                 </span>
-                <button
-                    type='button'
-                    className='rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
-                    Add devices
-                </button>
+                <AddDevice sn={props.gaterway.sn} id={props.gaterway.id} />
             </div>
         </div>
     );
