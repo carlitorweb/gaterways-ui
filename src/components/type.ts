@@ -5,6 +5,14 @@ export type gaterways = {
     ipv4: string;
 };
 
+export type devices = {
+    id: string;
+    gaterwayId: string;
+    vendor: string;
+    createdAt: string;
+    status: boolean;
+};
+
 export type fetchGetAllGaterwaysData = {
     message: string;
     totalOfGaterways: number;

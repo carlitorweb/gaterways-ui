@@ -1,8 +1,8 @@
 import { ServerIcon, AtSymbolIcon } from '@heroicons/react/24/solid';
-import { gaterways } from '../../type';
+import { devices, gaterways } from '../../type';
 
 type Props = {
-    gaterway: gaterways;
+    gaterway: gaterways & { devices: devices[] };
 };
 
 export default function ListData(props: Props) {
@@ -16,7 +16,7 @@ export default function ListData(props: Props) {
                 </span>
 
                 <h2 className='text-sm font-medium'>
-                    {props.gaterway.name}{' '}
+                    {`${props.gaterway.name} \(${props.gaterway.ipv4}\)`}{' '}
                     <span className='sr-only'>{true ? 'Running' : 'Not running'}</span>
                 </h2>
             </div>
@@ -25,10 +25,11 @@ export default function ListData(props: Props) {
                     className='h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
                     aria-hidden='true'
                 />
-
                 <span className='truncate text-sm font-medium text-gray-500 group-hover:text-gray-900'>
-                    {props.gaterway.ipv4}
+                    {`${props.gaterway.devices.length} Peripheral device added`}
                 </span>
+
+                <span className='truncate text-sm font-medium text-gray-500 group-hover:text-gray-900'></span>
             </div>
             <div className='group relative flex items-center space-x-2.5'>
                 <AtSymbolIcon
@@ -37,7 +38,7 @@ export default function ListData(props: Props) {
                 />
 
                 <span className='truncate text-sm font-medium text-gray-500 group-hover:text-gray-900'>
-                    {props.gaterway.sn}
+                    {`sn:${props.gaterway.sn}`}
                 </span>
             </div>
         </div>
