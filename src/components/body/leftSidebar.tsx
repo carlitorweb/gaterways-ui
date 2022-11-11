@@ -1,6 +1,6 @@
 import { CheckBadgeIcon, RectangleStackIcon } from '@heroicons/react/20/solid';
 import carlitorweb_avatar_src from '../../assets/carlitorweb.jpg';
-import Context from '../../context/context';
+import TotalGaterwaysContext from '../../context/totalGaterways';
 import GaterwayForm from '../gaterways/create';
 
 function LeftSidebar() {
@@ -71,7 +71,7 @@ function LeftSidebar() {
                                         className='h-5 w-5 text-gray-400'
                                         aria-hidden='true'
                                     />
-                                    <Context.Consumer>
+                                    <TotalGaterwaysContext.Consumer>
                                         {contextProps => {
                                             return (
                                                 <span className='text-sm font-medium text-gray-500'>
@@ -79,7 +79,7 @@ function LeftSidebar() {
                                                 </span>
                                             );
                                         }}
-                                    </Context.Consumer>
+                                    </TotalGaterwaysContext.Consumer>
                                 </div>
                             </div>
                         </div>
