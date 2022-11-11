@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { Bars3CenterLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import carlitorweb_avatar_src from '../../assets/carlitorweb.jpg';
 
 const navigation = [
     { name: 'Dashboard', href: '#', current: true },
@@ -17,6 +18,9 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
 }
 
+/**
+ * Predefined layout from Tailwindcss (not needed work on it yet)
+ */
 function Navbar() {
     return (
         <Disclosure as='nav' className='flex-shrink-0 bg-indigo-600'>
@@ -36,11 +40,9 @@ function Navbar() {
                             </div>
 
                             {/* Search section */}
+
                             <div className='flex flex-1 justify-center lg:justify-end'>
                                 <div className='w-full px-2 lg:px-6'>
-                                    <label htmlFor='search' className='sr-only'>
-                                        Search projects
-                                    </label>
                                     <div className='relative text-indigo-200 focus-within:text-gray-400'>
                                         <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
                                             <MagnifyingGlassIcon
@@ -52,7 +54,7 @@ function Navbar() {
                                             id='search'
                                             name='search'
                                             className='block w-full rounded-md border border-transparent bg-indigo-400 bg-opacity-25 py-2 pl-10 pr-3 leading-5 text-indigo-100 placeholder-indigo-200 focus:bg-white focus:text-gray-900 focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-sm'
-                                            placeholder='Search projects'
+                                            placeholder='Search gaterways'
                                             type='search'
                                         />
                                     </div>
@@ -98,8 +100,8 @@ function Navbar() {
                                                 <span className='sr-only'>Open user menu</span>
                                                 <img
                                                     className='h-8 w-8 rounded-full'
-                                                    src='https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
-                                                    alt=''
+                                                    src={carlitorweb_avatar_src}
+                                                    alt='Carlos Rodriguez'
                                                 />
                                             </Menu.Button>
                                         </div>

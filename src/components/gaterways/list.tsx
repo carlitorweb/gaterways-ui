@@ -1,6 +1,7 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { useContext, useEffect, useState } from 'react';
-import Context from '../../context/context';
+import TotalGaterwaysContext from '../../context/totalGaterways';
+
 import { fetchDeleteGaterwayMessage, fetchGetAllGaterwaysData } from '../type';
 import ListActions from './list/action';
 import ListData from './list/data';
@@ -23,7 +24,8 @@ function GaterwaysList() {
     // is triggered, we can re-render our list of gaterways
     const [doRender, setDoRender] = useState(false);
 
-    const context = useContext(Context);
+    // Total of gaterways provided
+    const totalGaterwaysContext = useContext(TotalGaterwaysContext);
 
     /**
      * @description Get the list of gaterways when component mount the first time
@@ -40,12 +42,12 @@ function GaterwaysList() {
             setFetchedData(data);
 
             // Update the total amount of gaterways in the leftSidebar component
-            context.setAmount(data.totalOfGaterways);
+            totalGaterwaysContext.setAmount(data.totalOfGaterways);
         })();
     }, []);
 
     /**
-     * @description After a device is added, re-render the list of gaterways for
+     * @description Add a new device and re-render the list of gaterways for
      * refresh the remained amount of devices that specific gaterway have
      *
      * @returns void
@@ -102,7 +104,7 @@ function GaterwaysList() {
                 setFetchedData(clonedFetchedData);
 
                 // Update the total amount of gaterways in the leftSidebar component
-                context.setAmount(clonedFetchedData.totalOfGaterways);
+                totalGaterwaysContext.setAmount(clonedFetchedData.totalOfGaterways);
             })();
         }
     };

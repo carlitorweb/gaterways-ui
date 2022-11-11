@@ -1,8 +1,10 @@
 import { Dialog } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { useRef, useState } from 'react';
-import Slideover from '../../utils/slideover';
-import Toggle from '../../utils/toggle';
+import { useContext, useRef, useState } from 'react';
+import DialogModalContext from '../../../context/DialogModal';
+import { DialogDataType } from '../../../context/type';
+import Slideover from '../../../helpers/slideover';
+import Toggle from '../../../helpers/toggle';
 
 interface Props {
     sn: string;
@@ -39,6 +41,8 @@ export default function AddDevice(props: Props) {
         vendor: '',
     });
 
+    const dialogModalContext = useContext(DialogModalContext);
+
     // Save the status of the toggle component
     const deviceStatus = useRef(false);
 
@@ -54,7 +58,7 @@ export default function AddDevice(props: Props) {
     const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const postBody = {
+        const deviceBody = {
             vendor: form.vendor,
             status: deviceStatus.current,
             gaterwayId: props.id,
@@ -63,7 +67,7 @@ export default function AddDevice(props: Props) {
         (async () => {
             let response = await fetch(`http://127.0.0.1:8000/devices`, {
                 method: 'POST',
-                body: JSON.stringify(postBody),
+                body: JSON.stringify(deviceBody),
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -73,8 +77,25 @@ export default function AddDevice(props: Props) {
 
             return fetchedDelateMessage;
         })().then(reponse => {
+            // Show a notification to the user about the device was added succefully
+            if (dialogModalContext.showDialog) {
+                // Close any Dialog we could have opened
+                dialogModalContext.setShowDialog(false);
+            }
+
+            // Add the content we will show to the user, and then show the dialog
+            const userNotification: DialogDataType = {
+                title: 'Attempt to create a new Peripheral device',
+                description: reponse.message,
+                isError: false,
+            };
+            dialogModalContext.setDialogData(userNotification);
+            dialogModalContext.setShowDialog(true);
+
+            console.log(dialogModalContext);
+
+            // while user read our notification, let update the list of gaterways
             props.renderList(true);
-            console.log(reponse);
         });
     };
     return (
