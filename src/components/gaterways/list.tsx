@@ -1,5 +1,6 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import Context from '../../context/context';
 import { fetchDeleteGaterwayMessage, fetchGetAllGaterwaysData } from '../type';
 import ListActions from './list/action';
 import ListData from './list/data';
@@ -14,7 +15,15 @@ import SortOptionsMenu from './list/sort';
  * Render the component again when a gaterway is removed updating the list of gaterways.
  */
 function GaterwaysList() {
+    // A state for our Gaterway and Devices datas
     const [fetchedData, setFetchedData] = useState<fetchGetAllGaterwaysData>();
+
+    // A state for pass it down to our components, for each time an action
+    // like removing a device, editing a gaterway, adding a device, etc
+    // is triggered, we can re-render our list of gaterways
+    const [doRender, setDoRender] = useState(false);
+
+    const context = useContext(Context);
 
     /**
      * @description Get the list of gaterways when component mount the first time
@@ -22,18 +31,49 @@ function GaterwaysList() {
      * @returns void
      *
      * @todo Catch the error exceptions of Fetch()
+     * @todo DRY Another component use the exact logic for the Fetch
      */
     useEffect(() => {
         (async () => {
             let response = await fetch('http://127.0.0.1:8000/gaterways');
             let data: fetchGetAllGaterwaysData = await response.json();
             setFetchedData(data);
+
+            // Update the total amount of gaterways in the leftSidebar component
+            context.setAmount(data.totalOfGaterways);
         })();
     }, []);
 
     /**
-     * @description Remove a stored gaterway and and re-render the component
-     * for refresh the list of gaterways
+     * @description After a device is added, re-render the list of gaterways for
+     * refresh the remained amount of devices that specific gaterway have
+     *
+     * @returns void
+     *
+     * @todo Instead of re-render the whole list of components, re-render only the
+     * gaterway <li> element involved
+     * @todo Catch the error exceptions of Fetch()
+     * @todo DRY Another component use the exact logic for the Fetch
+     */
+    useEffect(() => {
+        if (doRender === true) {
+            (async () => {
+                let response = await fetch('http://127.0.0.1:8000/gaterways');
+                let data: fetchGetAllGaterwaysData = await response.json();
+                setFetchedData(data);
+            })();
+
+            // We reset the state for next action
+            setDoRender(false);
+        }
+    }, [doRender]);
+
+    /**
+     * @description Remove a stored gaterway and re-render the component
+     * for refresh the list of gaterways. Have in mind, delete a gaterway will
+     * disconnect all his devices, so this devices will still exist but not connected
+     * to a gaterway... I need later list all these devices, so from the UI the user
+     * can connect the device to another gaterway.
      *
      * @param gaterwayId The ID of the gaterway we will remove
      *
@@ -68,12 +108,7 @@ function GaterwaysList() {
         <div className='bg-white lg:min-w-0 lg:flex-1'>
             <div className='border-b border-t border-gray-200 pl-4 pr-6 pt-4 pb-4 sm:pl-6 lg:pl-8 xl:border-t-0 xl:pl-6 xl:pt-6'>
                 <div className='flex items-center'>
-                    <h1 className='flex-1 text-lg font-medium'>
-                        Gaterways{' '}
-                        <span className='inline-flex bg-purple-100 text-purple-600 ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium md:inline-block'>
-                            {fetchedData !== undefined ? fetchedData.totalOfGaterways : 0}
-                        </span>
-                    </h1>
+                    <h1 className='flex-1 text-lg font-medium'>Gaterways </h1>
                     <SortOptionsMenu />
                 </div>
             </div>
@@ -98,6 +133,7 @@ function GaterwaysList() {
                                 <ListActions
                                     gaterway={gaterway}
                                     deleteHandler={handlerGaterwayDelete}
+                                    renderList={setDoRender}
                                 />
                             </div>
                         </li>

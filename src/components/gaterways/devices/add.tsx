@@ -7,6 +7,7 @@ import Toggle from '../../utils/toggle';
 interface Props {
     sn: string;
     id: string;
+    renderList: (value: boolean) => void;
 }
 
 interface fetchAddedDevice {
@@ -49,7 +50,7 @@ export default function AddDevice(props: Props) {
         });
     };
 
-    // Store the new Device
+    // Store the new Device and re-render our gaterway list component
     const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -69,8 +70,12 @@ export default function AddDevice(props: Props) {
             });
 
             const fetchedDelateMessage: fetchAddedDevice = await response.json();
-            console.log(fetchedDelateMessage);
-        })();
+
+            return fetchedDelateMessage;
+        })().then(reponse => {
+            props.renderList(true);
+            console.log(reponse);
+        });
     };
     return (
         <>

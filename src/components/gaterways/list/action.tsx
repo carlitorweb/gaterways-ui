@@ -4,6 +4,7 @@ import AddDevice from '../devices/add';
 type Props = {
     gaterway: gaterways;
     deleteHandler: (gaterwayId: string) => void;
+    renderList: (value: boolean) => void;
 };
 
 export default function ListActions(props: Props) {
@@ -27,7 +28,11 @@ export default function ListActions(props: Props) {
                 <span className='text-gray-300' aria-hidden='true'>
                     |
                 </span>
-                <AddDevice sn={props.gaterway.sn} id={props.gaterway.id} />
+                <AddDevice
+                    sn={props.gaterway.sn}
+                    id={props.gaterway.id}
+                    renderList={props.renderList}
+                />
             </div>
         </div>
     );
