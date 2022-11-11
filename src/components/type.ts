@@ -5,6 +5,12 @@ export type gaterways = {
     ipv4: string;
 };
 
+export type gaterwayFormData = {
+    name: string;
+    sn: string;
+    ipv4: string;
+};
+
 export type devices = {
     id: string;
     gaterwayId: string;

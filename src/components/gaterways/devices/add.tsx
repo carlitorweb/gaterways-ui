@@ -41,6 +41,7 @@ export default function AddDevice(props: Props) {
         vendor: '',
     });
 
+    // Our Dialog provider context
     const dialogModalContext = useContext(DialogModalContext);
 
     // Save the status of the toggle component
@@ -54,7 +55,11 @@ export default function AddDevice(props: Props) {
         });
     };
 
-    // Store the new Device and re-render our gaterway list component
+    /**
+     * Store the new Device and re-render our gaterway list component
+     *
+     * @todo Catch the error exceptions of Fetch()
+     * */
     const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -83,7 +88,12 @@ export default function AddDevice(props: Props) {
                 dialogModalContext.setShowDialog(false);
             }
 
-            // Add the content we will show to the user, and then show the dialog
+            /**
+             * Add the content we will show to the user, and then show the dialog
+             *
+             * @todo Move this to a separate component, will save me some lines of codes
+             * each time I need use it
+             *  */
             const userNotification: DialogDataType = {
                 title: 'Attempt to create a new Peripheral device',
                 description: reponse.message,
@@ -91,8 +101,6 @@ export default function AddDevice(props: Props) {
             };
             dialogModalContext.setDialogData(userNotification);
             dialogModalContext.setShowDialog(true);
-
-            console.log(dialogModalContext);
 
             // while user read our notification, let update the list of gaterways
             props.renderList(true);

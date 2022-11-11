@@ -1,28 +1,34 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Slideover from '../../helpers/slideover';
-import NotificationDialog from '../../helpers/dialog';
+import RenderFormFields from './form/renderFormFields';
+import { gaterwayFormData } from '../type';
+import TotalGaterwaysContext from '../../context/totalGaterways';
+import { DialogDataType } from '../../context/type';
+import DialogModalContext from '../../context/DialogModal';
 
 export default function SlideOverNewGaterway() {
     // Slideover close/open state
     const [slide, setSlide] = useState(false);
     // Gaterway form fields state
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<gaterwayFormData>({
         name: '',
         sn: '',
         ipv4: '',
     });
-    // NotificationDialog close/open state
-    let [dialog, setDialog] = useState({
-        open: false,
-        title: '',
-        description: '',
-        text: '',
-        isError: false,
-        okButtonText: '',
-    });
 
+    // Total of gaterways provided
+    const totalGaterwaysContext = useContext(TotalGaterwaysContext);
+
+    // Our Dialog provider context
+    const dialogModalContext = useContext(DialogModalContext);
+
+    /**
+     * @description Update our Form state
+     *
+     * @param event A event from which we will get access to what the user wrote in the fields
+     */
     const handleFormInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setForm({
             ...form,
@@ -30,69 +36,54 @@ export default function SlideOverNewGaterway() {
         });
     };
 
-    const handleDialogContentChange = (state: any) => {
-        setDialog({
-            ...dialog,
-            open: state.open,
-            title: state.title,
-            description: state.description,
-            text: state.text,
-            isError: state.isError,
-            okButtonText: state.okButtonText,
-        });
-    };
-    const handleDialogStatusChange = (status: boolean) => {
-        setDialog({
-            ...dialog,
-            open: status,
-        });
-    };
-
+    /**
+     * @description Store the new gaterway created
+     *
+     * @param event The event from the submit button of the form
+     *
+     * @todo Catch the error exceptions of Fetch()
+     */
     const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        // Prepare the toast notification content
-        let toastNotification: any = {
-            open: true,
-            title: 'Attempt to create a Gaterway',
-            description: '',
-            text: '',
-            isError: false,
-            okButtonText: '',
-        };
-
-        // Create a new gaterway
-        const url = 'http://127.0.0.1:8000/gaterways';
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(form),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(async response => {
-                const isJson = response.headers
-                    .get('content-type')
-                    ?.includes('application/json');
-                const data = isJson ? await response.json() : null;
-
-                toastNotification.description = data.message;
-
-                // check for error response
-                if (!response.ok) {
-                    // get error message from body or default to response status
-                    const error = (data && data.message) || response.status;
-                    return Promise.reject(error);
-                }
-
-                toastNotification.isError = false;
-                handleDialogContentChange(toastNotification);
-            })
-            .catch(error => {
-                toastNotification.isError = true;
-                handleDialogContentChange(toastNotification);
-                console.error('There was an error!', error);
+        (async () => {
+            let response = await fetch(`http://127.0.0.1:8000/gaterways`, {
+                method: 'POST',
+                body: JSON.stringify(form),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
+            const fetchedPostMessage: { message: string } = await response.json();
+
+            /**
+             * I need trigger a re-render to the gaterway list for
+             * the last gaterway show up. Maybe I will need a new context.
+             * Maybe something like a dispatch evetn logic can help me group
+             * all similar scenarios I already have
+             */
+
+            // Update the total amount of gaterways in the leftSidebar component
+            // totalGaterwaysContext.setAmount(clonedFetchedData.totalOfGaterways);
+
+            return fetchedPostMessage;
+        })().then(response => {
+            /**
+             * Add the content we will show to the user, and then show the dialog
+             *
+             * @todo Move this to a separate component, will save me some lines of codes
+             * each time I need use it
+             *  */
+            const userNotification: DialogDataType = {
+                title: 'Attempt to create a new Gaterway',
+                description: response.message,
+                isError: false,
+            };
+            dialogModalContext.setDialogData(userNotification);
+            dialogModalContext.setShowDialog(true);
+
+            console.log(dialogModalContext);
+        });
     };
 
     return (
@@ -132,63 +123,10 @@ export default function SlideOverNewGaterway() {
                                 </p>
                             </div>
                         </div>
-                        <div className='flex flex-1 flex-col justify-between'>
-                            <div className='divide-y divide-gray-200 px-4 sm:px-6'>
-                                <div className='space-y-6 pt-6 pb-5'>
-                                    <div>
-                                        <label
-                                            htmlFor='name'
-                                            className='block text-sm font-medium text-gray-900'>
-                                            Gaterway name
-                                        </label>
-                                        <div className='mt-1'>
-                                            <input
-                                                type='text'
-                                                name='name'
-                                                id='name'
-                                                value={form.name}
-                                                onChange={handleFormInputChange}
-                                                className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label
-                                            htmlFor='sn'
-                                            className='block text-sm font-medium text-gray-900'>
-                                            Gaterway serial number
-                                        </label>
-                                        <div className='mt-1'>
-                                            <input
-                                                type='text'
-                                                name='sn'
-                                                id='sn'
-                                                value={form.sn}
-                                                onChange={handleFormInputChange}
-                                                className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label
-                                            htmlFor='ipv4'
-                                            className='block text-sm font-medium text-gray-900'>
-                                            Gaterway IPv4
-                                        </label>
-                                        <div className='mt-1'>
-                                            <input
-                                                type='text'
-                                                name='ipv4'
-                                                id='ipv4'
-                                                value={form.ipv4}
-                                                onChange={handleFormInputChange}
-                                                className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <RenderFormFields
+                            fields={form}
+                            handlerInputChange={handleFormInputChange}
+                        />
                     </div>
                     <div className='flex flex-shrink-0 justify-end px-4 py-4'>
                         <button
@@ -205,16 +143,6 @@ export default function SlideOverNewGaterway() {
                     </div>
                 </form>
             </Slideover>
-
-            {dialog.open && (
-                <NotificationDialog
-                    open={dialog.open}
-                    title={dialog.title}
-                    description={dialog.description}
-                    isError={dialog.isError}
-                    okButtonText={dialog.okButtonText}
-                />
-            )}
         </>
     );
 }
