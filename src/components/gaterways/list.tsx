@@ -38,7 +38,7 @@ function GaterwaysList() {
     useEffect(() => {
         (async () => {
             let response = await fetch('http://127.0.0.1:8000/gaterways');
-            let data: fetchGetAllGaterwaysData = await response.json();
+            let data = (await response.json()) as fetchGetAllGaterwaysData;
             setFetchedData(data);
 
             // Update the total amount of gaterways in the leftSidebar component
@@ -61,7 +61,7 @@ function GaterwaysList() {
         if (doRender === true) {
             (async () => {
                 let response = await fetch('http://127.0.0.1:8000/gaterways');
-                let data: fetchGetAllGaterwaysData = await response.json();
+                let data = (await response.json()) as fetchGetAllGaterwaysData;
                 setFetchedData(data);
             })();
 
@@ -89,7 +89,8 @@ function GaterwaysList() {
                 let response = await fetch(`http://127.0.0.1:8000/gaterways/${gaterwayId}`, {
                     method: 'DELETE',
                 });
-                const fetchedDelateMessage: fetchDeleteGaterwayMessage = await response.json();
+                const fetchedDelateMessage =
+                    (await response.json()) as fetchDeleteGaterwayMessage;
 
                 // Update 'fetchedData' state in a inmutable way and re-render the component
                 // for update the list of gaterways
