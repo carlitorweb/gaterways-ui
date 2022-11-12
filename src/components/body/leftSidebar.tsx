@@ -48,11 +48,6 @@ function LeftSidebar() {
                                 {/* Action buttons */}
                                 <div className='flex flex-col sm:flex-row xl:flex-col'>
                                     <GaterwayForm />
-                                    <button
-                                        type='button'
-                                        className='mt-3 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 xl:ml-0 xl:mt-3 xl:w-full'>
-                                        Invite Team
-                                    </button>
                                 </div>
                             </div>
                             {/* Meta info */}
