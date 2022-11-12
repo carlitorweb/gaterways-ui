@@ -54,36 +54,16 @@ export default function SlideOverNewGaterway() {
                     'Content-Type': 'application/json',
                 },
             });
-            const fetchedPostMessage: { message: string } = await response.json();
 
-            /**
-             * I need trigger a re-render to the gaterway list for
-             * the last gaterway show up. Maybe I will need a new context.
-             * Maybe something like a dispatch evetn logic can help me group
-             * all similar scenarios I already have
-             */
-
-            // Update the total amount of gaterways in the leftSidebar component
-            // totalGaterwaysContext.setAmount(clonedFetchedData.totalOfGaterways);
-
-            return fetchedPostMessage;
-        })().then(response => {
-            /**
-             * Add the content we will show to the user, and then show the dialog
-             *
-             * @todo Move this to a separate component, will save me some lines of codes
-             * each time I need use it
-             *  */
+            const resp = (await response.json()) as { message: string; code: number };
             const userNotification: DialogDataType = {
                 title: 'Attempt to create a new Gaterway',
-                description: response.message,
-                isError: false,
+                description: resp.message,
+                isError: resp.code >= 300 ? true : false,
             };
             dialogModalContext.setDialogData(userNotification);
             dialogModalContext.setShowDialog(true);
-
-            console.log(dialogModalContext);
-        });
+        })();
     };
 
     return (
