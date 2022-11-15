@@ -22,7 +22,7 @@ const config: Config = {
     // Tells Jest what folders to ignore for tests
     testPathIgnorePatterns: [`node_modules`],
 
-    setupFilesAfterEnv: ['<rootDir>/testSetupFile.ts'],
+    setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
 };
 
 export default config;

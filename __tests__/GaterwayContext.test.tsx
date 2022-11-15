@@ -1,8 +1,11 @@
-// Test for components/gaterways/create
-import { unmountComponentAtNode, render } from 'react-dom';
-import List from '../src/components/gaterways/list';
+import { unmountComponentAtNode } from 'react-dom';
+import { render, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import fetchMock from 'jest-fetch-mock';
+
+import { GaterwayStoreProvider } from '../src/context/gaterwayStore';
+
+jest.mock('../__mocks__/App.js');
+import App from '../src/App';
 
 const oneDummyGaterway = [
     {
@@ -35,3 +38,30 @@ const oneDummyGaterway = [
         ],
     },
 ];
+
+let container: null | HTMLDivElement | Element | DocumentFragment = null;
+beforeEach(() => {
+    // setup a DOM element as a render target
+    container = document.createElement('div');
+    container.setAttribute('id', 'test');
+    document.body.appendChild(container);
+});
+
+afterEach(() => {
+    // cleanup on exiting
+    unmountComponentAtNode(container!);
+    const containerToRemove = document.getElementById('test')!;
+    containerToRemove.remove();
+    container = null;
+});
+
+it('renders with or without a name', () => {
+    act(() => {
+        render(
+            <GaterwayStoreProvider>
+                <App />
+            </GaterwayStoreProvider>
+        );
+    });
+    expect(container!.textContent).toBe('Hey, stranger');
+});
