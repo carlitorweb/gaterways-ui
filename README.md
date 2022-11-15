@@ -46,3 +46,4 @@ When all dependency are installed, run the follow command:
 ```
 
 The application UI will launch
+![preview](https://user-images.githubusercontent.com/3956472/201934843-c018d162-cfec-4f9a-90f8-23d243a58987.PNG)
