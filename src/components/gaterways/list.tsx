@@ -1,6 +1,5 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { useContext, useEffect, useState } from 'react';
-import TotalGaterwaysContext from '../../context/totalGaterways';
 import {
     GaterwayStoreContext,
     GaterwayStoreDispatchContext,
@@ -41,9 +40,6 @@ function GaterwaysList() {
     // like removing a device, editing a gaterway, adding a device, etc
     // is triggered, we can re-render our list of gaterways
     const [doRender, setDoRender] = useState(false);
-
-    // Total of gaterways provided
-    const totalGaterwaysContext = useContext(TotalGaterwaysContext);
 
     /**
      * @description Get the list of gaterways when component mount the first time.
@@ -126,9 +122,6 @@ function GaterwaysList() {
                 clonedFetchedData.message = fetchedDelateMessage.message;
 
                 setFetchedData(clonedFetchedData);
-
-                // Update the total amount of gaterways in the leftSidebar component
-                totalGaterwaysContext.setAmount(clonedFetchedData.totalOfGaterways);
             })();
         }
     };

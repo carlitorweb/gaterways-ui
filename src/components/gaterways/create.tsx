@@ -4,7 +4,6 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import Slideover from '../../helpers/slideover';
 import RenderFormFields from './form/renderFormFields';
 import { gaterwayFormData } from '../type';
-import TotalGaterwaysContext from '../../context/totalGaterways';
 import { DialogDataType } from '../../context/type';
 import DialogModalContext from '../../context/DialogModal';
 
@@ -17,9 +16,6 @@ export default function SlideOverNewGaterway() {
         sn: '',
         ipv4: '',
     });
-
-    // Total of gaterways provided
-    const totalGaterwaysContext = useContext(TotalGaterwaysContext);
 
     // Our Dialog provider context
     const dialogModalContext = useContext(DialogModalContext);
