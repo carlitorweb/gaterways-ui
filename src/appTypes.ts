@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 export interface childrenProps {
     children: ReactNode;
@@ -18,17 +18,19 @@ export interface devices {
     status: boolean;
 }
 
+export type listGaterways = (gaterways & { devices: devices[] })[];
+
+export type fetchGetAllGaterwaysData = {
+    message: string;
+    totalOfGaterways: number;
+    data: listGaterways | [];
+};
+
 // Gaterway Store context reducer
-enum actions {
+export enum actions {
     ADD_NEW = 'ADD_NEW',
 }
-export interface Action {
+export interface GaterwayDispatchAction {
     type: actions;
-}
-
-// Gaterway Store context initial data
-export type inititalStateGaterwayStore = (gaterways & { devices: devices[] })[] | [];
-export interface contextType {
-    state: inititalStateGaterwayStore;
-    dispatch: React.Dispatch<Action>;
+    fetchedData: fetchGetAllGaterwaysData;
 }

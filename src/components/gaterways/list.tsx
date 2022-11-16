@@ -1,11 +1,26 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { useContext, useEffect, useState } from 'react';
 import TotalGaterwaysContext from '../../context/totalGaterways';
+import {
+    GaterwayStoreContext,
+    GaterwayStoreDispatchContext,
+} from '../../context/gaterwayStore';
 
 import { fetchDeleteGaterwayMessage, fetchGetAllGaterwaysData } from '../type';
 import ListActions from './list/action';
 import ListData from './list/data';
 import SortOptionsMenu from './list/sort';
+import { actions } from '../../appTypes';
+
+/**
+ * Top-level variable to track if some logic must run once per app load
+ * rather than once per component mount
+ *
+ * @link https://beta.reactjs.org/learn/you-might-not-need-an-effect#initializing-the-application
+ * @todo Move this variable to a more top file like App.tsx
+ * for avoid the need of create it again in other component who may need it
+ */
+let didInit = false;
 
 /**
  * @description Component for render and do some actions with the list of gaterways stored.
@@ -19,6 +34,9 @@ function GaterwaysList() {
     // A state for our Gaterway and Devices datas
     const [fetchedData, setFetchedData] = useState<fetchGetAllGaterwaysData>();
 
+    const gaterwaysDispatch = useContext(GaterwayStoreDispatchContext);
+    const gaterways = useContext(GaterwayStoreContext);
+
     // A state for pass it down to our components, for each time an action
     // like removing a device, editing a gaterway, adding a device, etc
     // is triggered, we can re-render our list of gaterways
@@ -28,22 +46,29 @@ function GaterwaysList() {
     const totalGaterwaysContext = useContext(TotalGaterwaysContext);
 
     /**
-     * @description Get the list of gaterways when component mount the first time
+     * @description Get the list of gaterways when component mount the first time.
      *
      * @returns void
      *
      * @todo Catch the error exceptions of Fetch()
      * @todo DRY Another component use the exact logic for the Fetch
      */
-    useEffect(() => {
-        (async () => {
-            let response = await fetch('http://127.0.0.1:8000/gaterways');
-            let data = (await response.json()) as fetchGetAllGaterwaysData;
-            setFetchedData(data);
 
-            // Update the total amount of gaterways in the leftSidebar component
-            totalGaterwaysContext.setAmount(data.totalOfGaterways);
-        })();
+    useEffect(() => {
+        if (!didInit) {
+            didInit = true;
+
+            (async () => {
+                let response = await fetch('http://127.0.0.1:8000/gaterways');
+                let fetchedData = (await response.json()) as fetchGetAllGaterwaysData;
+
+                // Add the new gaterways to the context-store state
+                gaterwaysDispatch!({ type: actions.ADD_NEW, fetchedData });
+
+                // Update the total amount of gaterways in the leftSidebar component
+                totalGaterwaysContext.setAmount(fetchedData.totalOfGaterways);
+            })();
+        }
     }, []);
 
     /**
@@ -73,7 +98,7 @@ function GaterwaysList() {
     /**
      * @description Remove a stored gaterway and re-render the component
      * for refresh the list of gaterways. Have in mind, delete a gaterway will
-     * disconnect all his devices, so this devices will still exist but not connected
+     * disconnect all his devices, so these devices will still exist but not connected
      * to a gaterway... I need later list all these devices, so from the UI the user
      * can connect the device to another gaterway.
      *
@@ -119,10 +144,9 @@ function GaterwaysList() {
                 </div>
             </div>
             <ul role='list' className='divide-y divide-gray-200 border-b border-gray-200'>
-                {fetchedData !== undefined &&
-                    Array.isArray(fetchedData.data) &&
-                    fetchedData.data.length > 0 &&
-                    fetchedData.data.map(gaterway => (
+                {Array.isArray(gaterways.data) &&
+                    gaterways.data.length > 0 &&
+                    gaterways.data.map(gaterway => (
                         <li
                             key={gaterway.id}
                             className='relative py-5 pl-4 pr-6 hover:bg-gray-50 sm:py-6 sm:pl-6 lg:pl-8 xl:pl-6'>

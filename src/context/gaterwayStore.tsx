@@ -1,32 +1,46 @@
-import { childrenProps, inititalStateGaterwayStore, Action, contextType } from '@appTypes';
-import { createContext, useReducer } from 'react';
+import { createContext, Dispatch, useReducer } from 'react';
+import { childrenProps, fetchGetAllGaterwaysData, GaterwayDispatchAction } from '../appTypes';
+// Initital value of the store
+const initialState: fetchGetAllGaterwaysData = {
+    message: '',
+    totalOfGaterways: 0,
+    data: [],
+};
 
-// Create the store with empty data as initital value
-const initialState: inititalStateGaterwayStore = [];
-const GaterwayStoreContext = createContext<contextType>({
-    state: initialState,
-    dispatch: (action: Action) => {},
-});
+// Gaterway store context/provider
+const GaterwayStoreContext = createContext(initialState);
+const GaterwayStoreDispatchContext = createContext<Dispatch<GaterwayDispatchAction> | null>(
+    null
+);
 
 // Reducer to manage the state
-function gaterwayStateReducer(stateToChange: inititalStateGaterwayStore, action: Action) {
+function gaterwaysReducer(
+    gaterways: fetchGetAllGaterwaysData,
+    action: GaterwayDispatchAction
+) {
     switch (action.type) {
         case 'ADD_NEW':
-            return { ...initialState, ...stateToChange };
+            return {
+                ...gaterways,
+                data: action.fetchedData.data,
+                message: action.fetchedData.message,
+                totalOfGaterways: action.fetchedData.totalOfGaterways,
+            };
 
         default:
             return initialState;
     }
 }
 
-// Gaterway store provider
 const GaterwayStoreProvider = ({ children }: childrenProps) => {
-    const [state, dispatch] = useReducer(gaterwayStateReducer, initialState);
+    const [gaterways, dispatch] = useReducer(gaterwaysReducer, initialState);
 
     return (
-        <GaterwayStoreContext.Provider value={{ state, dispatch }}>
-            {children}
+        <GaterwayStoreContext.Provider value={gaterways}>
+            <GaterwayStoreDispatchContext.Provider value={dispatch}>
+                {children}
+            </GaterwayStoreDispatchContext.Provider>
         </GaterwayStoreContext.Provider>
     );
 };
-export { GaterwayStoreContext, GaterwayStoreProvider };
+export { GaterwayStoreContext, GaterwayStoreDispatchContext, GaterwayStoreProvider };
