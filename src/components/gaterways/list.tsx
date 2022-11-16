@@ -63,10 +63,8 @@ function GaterwaysList() {
                 let fetchedData = (await response.json()) as fetchGetAllGaterwaysData;
 
                 // Add the new gaterways to the context-store state
-                gaterwaysDispatch!({ type: actions.ADD_NEW, fetchedData });
-
-                // Update the total amount of gaterways in the leftSidebar component
-                totalGaterwaysContext.setAmount(fetchedData.totalOfGaterways);
+                gaterwaysDispatch &&
+                    gaterwaysDispatch({ type: actions.ADD_NEW_LIST_GATERWAYS, fetchedData });
             })();
         }
     }, []);

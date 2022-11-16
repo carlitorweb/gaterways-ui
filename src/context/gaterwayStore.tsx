@@ -13,13 +13,20 @@ const GaterwayStoreDispatchContext = createContext<Dispatch<GaterwayDispatchActi
     null
 );
 
-// Reducer to manage the state
+/**
+ * @description Reducer to manage the state
+ *
+ * @param gaterways Current (previous) state of our context
+ * @param action The action and the data for update our current state or
+ * to get a specific information from our context-store, like the total of gaterways stored
+ * @returns A object
+ */
 function gaterwaysReducer(
     gaterways: fetchGetAllGaterwaysData,
     action: GaterwayDispatchAction
 ) {
     switch (action.type) {
-        case 'ADD_NEW':
+        case 'ADD_NEW_LIST_GATERWAYS':
             return {
                 ...gaterways,
                 data: action.fetchedData.data,
@@ -32,6 +39,9 @@ function gaterwaysReducer(
     }
 }
 
+/**
+ * Main component
+ */
 const GaterwayStoreProvider = ({ children }: childrenProps) => {
     const [gaterways, dispatch] = useReducer(gaterwaysReducer, initialState);
 
