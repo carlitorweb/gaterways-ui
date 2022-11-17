@@ -5,6 +5,7 @@ import {
     GaterwayDispatchAction,
     listGaterways,
 } from '../appTypes';
+
 // Initital value of the store
 const initialState: fetchGetAllGaterwaysData = {
     message: '',

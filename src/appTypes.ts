@@ -1,4 +1,6 @@
-import React, { ReactNode } from 'react';
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { ReactNode } from 'react';
 
 export interface childrenProps {
     children: ReactNode;
@@ -38,6 +40,37 @@ export interface GaterwayDispatchAction {
     gaterwayDeletedMessage?: fetchDeleteGaterwayMessage;
 }
 
+// Message we got when try to delete a gaterway
 export type fetchDeleteGaterwayMessage = {
     message: string;
+};
+
+// Dialog modal notification
+export type DialogDataType = {
+    isError: boolean;
+    title: string;
+    description: string;
+};
+export type DialogProviderDataType = {
+    showDialog: boolean;
+    setShowDialog: (value: boolean) => void;
+    dialogData: DialogDataType;
+    setDialogData: (data: DialogDataType) => void;
+};
+export const inititalDialogData: DialogProviderDataType = {
+    showDialog: false,
+    setShowDialog: (value: boolean) => {},
+    dialogData: {
+        isError: false,
+        title: '',
+        description: '',
+    },
+    setDialogData: (data: DialogDataType) => {},
+};
+export type DialogComponentDataType = {
+    open: boolean;
+    title: string;
+    description: string;
+    isError: boolean;
+    closeDialog: (value: boolean) => void;
 };

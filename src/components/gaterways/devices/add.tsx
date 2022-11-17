@@ -1,8 +1,8 @@
 import { Dialog } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useContext, useRef, useState } from 'react';
+import { DialogDataType } from '../../../appTypes';
 import DialogModalContext from '../../../context/DialogModal';
-import { DialogDataType } from '../../../context/type';
 import Slideover from '../../../helpers/slideover';
 import Toggle from '../../../helpers/toggle';
 
@@ -69,7 +69,7 @@ export default function AddDevice(props: Props) {
         };
 
         (async () => {
-            let response = await fetch(`http://127.0.0.1:8000/devices`, {
+            const response = await fetch(`http://127.0.0.1:8000/devices`, {
                 method: 'POST',
                 body: JSON.stringify(deviceBody),
                 headers: {

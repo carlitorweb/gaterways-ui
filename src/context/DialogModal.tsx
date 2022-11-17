@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { inititalDialogData } from './type';
+import { inititalDialogData } from '../appTypes';
 
 const DialogModalContext = createContext(inititalDialogData);
 

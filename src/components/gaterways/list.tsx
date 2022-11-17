@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import {
     GaterwayStoreContext,
     GaterwayStoreDispatchContext,
@@ -9,7 +9,8 @@ import { fetchGetAllGaterwaysData } from '../type';
 import ListActions from './list/action';
 import ListData from './list/data';
 import SortOptionsMenu from './list/sort';
-import { actions, fetchDeleteGaterwayMessage } from '../../appTypes';
+import { actions, DialogDataType, fetchDeleteGaterwayMessage } from '../../appTypes';
+import DialogModalContext from '../../context/DialogModal';
 
 /**
  * Top-level variable to track if some logic must run once per app load
@@ -30,11 +31,12 @@ let didInit = false;
  * Render the component again when a gaterway is removed updating the list of gaterways.
  */
 function GaterwaysList() {
-    // A state for our Gaterway and Devices datas
-    const [fetchedData, setFetchedData] = useState<fetchGetAllGaterwaysData>();
-
+    // Gaterway store Context/Provider
     const gaterwaysDispatch = useContext(GaterwayStoreDispatchContext);
     const gaterways = useContext(GaterwayStoreContext);
+
+    // Dialog provider context
+    const dialogModalContext = useContext(DialogModalContext);
 
     /**
      * @description Get the list of gaterways when component mount the first time.
@@ -50,8 +52,8 @@ function GaterwaysList() {
             didInit = true;
 
             (async () => {
-                let response = await fetch('http://127.0.0.1:8000/gaterways');
-                let fetchedData = (await response.json()) as fetchGetAllGaterwaysData;
+                const response = await fetch('http://127.0.0.1:8000/gaterways');
+                const fetchedData = (await response.json()) as fetchGetAllGaterwaysData;
 
                 // Add the new gaterways to the context-store state
                 gaterwaysDispatch &&
@@ -71,27 +73,48 @@ function GaterwaysList() {
      *
      * @returns void
      *
-     * @todo Catch the error exceptions of Fetch()
      */
     const handlerGaterwayDelete = (gaterwayId: string) => {
-        (async () => {
-            let response = await fetch(`http://127.0.0.1:8000/gaterways/${gaterwayId}`, {
-                method: 'DELETE',
-            });
-            const gaterwayDeletedMessage =
-                (await response.json()) as fetchDeleteGaterwayMessage;
+        const userNotification: DialogDataType = {
+            title: 'Attempt to remove a Gaterway',
+            description: '',
+            isError: false,
+        };
 
-            // Delete the gaterway from the context-store state
-            gaterwaysDispatch &&
-                gaterwaysDispatch({
-                    type: actions.REMOVE_GATERWAY,
-                    gaterwayId,
-                    gaterwayDeletedMessage,
-                });
-        })();
+        fetch(`http://127.0.0.1:8000/gaterways/${gaterwayId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw response;
+            })
+            .then((gaterwayDeletedMessage: fetchDeleteGaterwayMessage) => {
+                userNotification.description = gaterwayDeletedMessage.message;
+
+                // Delete the gaterway from the context-store state
+                gaterwaysDispatch &&
+                    gaterwaysDispatch({
+                        type: actions.REMOVE_GATERWAY,
+                        gaterwayId,
+                        gaterwayDeletedMessage,
+                    });
+            })
+            .catch((error: Response) => {
+                userNotification.isError = true;
+                if (error.status == 404) {
+                    userNotification.description =
+                        'Failed to load the gaterway: the gaterway you try to delete was not found in the server (Error 404 - Not Found)';
+                }
+                console.log(error);
+            })
+            .finally(() => {
+                dialogModalContext.setDialogData(userNotification);
+                dialogModalContext.setShowDialog(true);
+            });
     };
 
-    console.log(gaterways);
     return (
         <div className='bg-white lg:min-w-0 lg:flex-1'>
             <div className='border-b border-t border-gray-200 pl-4 pr-6 pt-4 pb-4 sm:pl-6 lg:pl-8 xl:border-t-0 xl:pl-6 xl:pt-6'>

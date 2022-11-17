@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
+import { inititalDialogData } from '../../appTypes';
 import NotificationDialog from '../../helpers/dialog';
 import DialogModalContext from '../DialogModal';
-import { inititalDialogData } from '../type';
 
 interface Props {
     children: ReactNode;

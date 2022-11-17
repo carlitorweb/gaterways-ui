@@ -29,6 +29,10 @@ REST service for storing and share information about Gaterways
 -   [ ] Meaningful Unit tests (Jest was the choosen tool)
 -   [ ] An automated build
 
+## To-do to improve
+
+-   [ ] Use React Query for our Fetch (https://tanstack.com/)
+
 ## Installation
 
 **Note:** Need the gaterway-server running first

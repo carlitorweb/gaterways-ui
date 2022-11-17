@@ -4,8 +4,8 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import Slideover from '../../helpers/slideover';
 import RenderFormFields from './form/renderFormFields';
 import { gaterwayFormData } from '../type';
-import { DialogDataType } from '../../context/type';
 import DialogModalContext from '../../context/DialogModal';
+import { DialogDataType } from '../../appTypes';
 
 export default function SlideOverNewGaterway() {
     // Slideover close/open state
@@ -43,7 +43,7 @@ export default function SlideOverNewGaterway() {
         event.preventDefault();
 
         (async () => {
-            let response = await fetch(`http://127.0.0.1:8000/gaterways`, {
+            const response = await fetch(`http://127.0.0.1:8000/gaterways`, {
                 method: 'POST',
                 body: JSON.stringify(form),
                 headers: {
