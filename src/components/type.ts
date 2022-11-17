@@ -24,7 +24,3 @@ export type fetchGetAllGaterwaysData = {
     totalOfGaterways: number;
     data: (gaterways & { devices: devices[] })[];
 };
-
-export type fetchDeleteGaterwayMessage = {
-    message: string;
-};

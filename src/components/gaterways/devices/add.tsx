@@ -9,7 +9,6 @@ import Toggle from '../../../helpers/toggle';
 interface Props {
     sn: string;
     id: string;
-    renderList: (value: boolean) => void;
 }
 
 interface fetchAddedDevice {
@@ -101,9 +100,6 @@ export default function AddDevice(props: Props) {
             };
             dialogModalContext.setDialogData(userNotification);
             dialogModalContext.setShowDialog(true);
-
-            // while user read our notification, let update the list of gaterways
-            props.renderList(true);
         });
     };
     return (

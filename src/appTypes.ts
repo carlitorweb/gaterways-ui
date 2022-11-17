@@ -29,8 +29,15 @@ export type fetchGetAllGaterwaysData = {
 // Gaterway Store context reducer
 export enum actions {
     ADD_NEW_LIST_GATERWAYS = 'ADD_NEW_LIST_GATERWAYS',
+    REMOVE_GATERWAY = 'REMOVE_GATERWAY',
 }
 export interface GaterwayDispatchAction {
     type: actions;
-    fetchedData: fetchGetAllGaterwaysData;
+    fetchedData?: fetchGetAllGaterwaysData;
+    gaterwayId?: string;
+    gaterwayDeletedMessage?: fetchDeleteGaterwayMessage;
 }
+
+export type fetchDeleteGaterwayMessage = {
+    message: string;
+};
