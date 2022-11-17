@@ -1,10 +1,5 @@
 import { createContext, Dispatch, useReducer } from 'react';
-import {
-    childrenProps,
-    fetchGetAllGaterwaysData,
-    GaterwayDispatchAction,
-    listGaterways,
-} from '../appTypes';
+import { childrenProps, fetchGetAllGaterwaysData, GaterwayDispatchAction } from '../appTypes';
 
 // Initital value of the store
 const initialState: fetchGetAllGaterwaysData = {
@@ -42,13 +37,25 @@ function gaterwaysReducer(
                 };
             }
 
+        case 'ADD_NEW_GATERWAY':
+            if (action.newGaterwayCreated) {
+                return {
+                    ...gaterways,
+                    data: [...gaterways.data, action.newGaterwayCreated],
+                    message: '',
+                    totalOfGaterways: gaterways.totalOfGaterways++,
+                };
+            }
+
         case 'REMOVE_GATERWAY':
             return {
                 ...gaterways,
                 data: gaterways.data.filter(gater => {
                     return gater.id !== action.gaterwayId;
                 }),
-                message: action.gaterwayDeletedMessage!.message,
+                message:
+                    action.gaterwayDeletedMessage?.message ??
+                    'The result message could not be loaded',
                 totalOfGaterways: gaterways.totalOfGaterways--,
             };
 

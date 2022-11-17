@@ -11,6 +11,7 @@ export interface gaterways {
     name: string;
     sn: string;
     ipv4: string;
+    devices?: devices[];
 }
 export interface devices {
     id: string;
@@ -20,24 +21,24 @@ export interface devices {
     status: boolean;
 }
 
-export type listGaterways = (gaterways & { devices: devices[] })[];
-
 export type fetchGetAllGaterwaysData = {
     message: string;
     totalOfGaterways: number;
-    data: listGaterways | [];
+    data: gaterways[] | [];
 };
 
 // Gaterway Store context reducer
 export enum actions {
     ADD_NEW_LIST_GATERWAYS = 'ADD_NEW_LIST_GATERWAYS',
     REMOVE_GATERWAY = 'REMOVE_GATERWAY',
+    ADD_NEW_GATERWAY = 'ADD_NEW_GATERWAY',
 }
 export interface GaterwayDispatchAction {
     type: actions;
     fetchedData?: fetchGetAllGaterwaysData;
     gaterwayId?: string;
     gaterwayDeletedMessage?: fetchDeleteGaterwayMessage;
+    newGaterwayCreated?: gaterways;
 }
 
 // Message we got when try to delete a gaterway
@@ -73,4 +74,11 @@ export type DialogComponentDataType = {
     description: string;
     isError: boolean;
     closeDialog: (value: boolean) => void;
+};
+
+// Form for add a new Gaterway
+export type gaterwayFormData = {
+    name: string;
+    sn: string;
+    ipv4: string;
 };

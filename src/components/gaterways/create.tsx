@@ -3,9 +3,9 @@ import { Dialog } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Slideover from '../../helpers/slideover';
 import RenderFormFields from './form/renderFormFields';
-import { gaterwayFormData } from '../type';
 import DialogModalContext from '../../context/DialogModal';
-import { DialogDataType } from '../../appTypes';
+import { actions, DialogDataType, gaterwayFormData, gaterways } from '../../appTypes';
+import { GaterwayStoreDispatchContext } from '../../context/gaterwayStore';
 
 export default function SlideOverNewGaterway() {
     // Slideover close/open state
@@ -16,6 +16,9 @@ export default function SlideOverNewGaterway() {
         sn: '',
         ipv4: '',
     });
+
+    // Gaterway store Context/Provider
+    const gaterwaysDispatch = useContext(GaterwayStoreDispatchContext);
 
     // Our Dialog provider context
     const dialogModalContext = useContext(DialogModalContext);
@@ -37,29 +40,59 @@ export default function SlideOverNewGaterway() {
      *
      * @param event The event from the submit button of the form
      *
-     * @todo Catch the error exceptions of Fetch()
+     * @todo Let the user can add Devices in the Gaterway create form
+     * and save all in the same operation
      */
     const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        (async () => {
-            const response = await fetch(`http://127.0.0.1:8000/gaterways`, {
-                method: 'POST',
-                body: JSON.stringify(form),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        const userNotification: DialogDataType = {
+            title: 'Attempt to create a new Gaterway',
+            description: '',
+            isError: false,
+        };
 
-            const resp = (await response.json()) as { message: string; code: number };
-            const userNotification: DialogDataType = {
-                title: 'Attempt to create a new Gaterway',
-                description: resp.message,
-                isError: resp.code >= 300 ? true : false,
-            };
-            dialogModalContext.setDialogData(userNotification);
-            dialogModalContext.setShowDialog(true);
-        })();
+        fetch(`http://127.0.0.1:8000/gaterways`, {
+            method: 'POST',
+            body: JSON.stringify(form),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            // Check if the server could add the new gaterway to the DB
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw response;
+            })
+            // Server OK, now we can add the new Gaterway to our Context Store
+            .then(resp => {
+                const newGaterwayCreated: gaterways = {
+                    ...form,
+                    id: resp.gaterwayCreatedId,
+                };
+
+                // Add the new gaterway to the context-store state
+                gaterwaysDispatch &&
+                    gaterwaysDispatch({
+                        type: actions.ADD_NEW_GATERWAY,
+                        newGaterwayCreated,
+                    });
+
+                // Prepare the notification message for the user
+                userNotification.description = resp.message;
+            })
+            .catch(error => {
+                userNotification.isError = true;
+                userNotification.description = error.message;
+                console.log(error);
+            })
+            .finally(() => {
+                // Trigger the Dialog modal to inform the user about a error or a succesful operation
+                dialogModalContext.setDialogData(userNotification);
+                dialogModalContext.setShowDialog(true);
+            });
     };
 
     return (

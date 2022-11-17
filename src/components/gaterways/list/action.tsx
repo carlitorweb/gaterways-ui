@@ -1,4 +1,4 @@
-import { gaterways } from '../../type';
+import { gaterways } from '../../../appTypes';
 import AddDevice from '../devices/add';
 
 type Props = {

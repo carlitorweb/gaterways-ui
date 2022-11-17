@@ -1,4 +1,4 @@
-import { gaterwayFormData } from '../../type';
+import { gaterwayFormData } from '../../../appTypes';
 
 type Props = {
     fields: gaterwayFormData;

@@ -4,12 +4,15 @@ import {
     GaterwayStoreContext,
     GaterwayStoreDispatchContext,
 } from '../../context/gaterwayStore';
-
-import { fetchGetAllGaterwaysData } from '../type';
 import ListActions from './list/action';
 import ListData from './list/data';
 import SortOptionsMenu from './list/sort';
-import { actions, DialogDataType, fetchDeleteGaterwayMessage } from '../../appTypes';
+import {
+    actions,
+    DialogDataType,
+    fetchDeleteGaterwayMessage,
+    fetchGetAllGaterwaysData,
+} from '../../appTypes';
 import DialogModalContext from '../../context/DialogModal';
 
 /**
@@ -84,12 +87,14 @@ function GaterwaysList() {
         fetch(`http://127.0.0.1:8000/gaterways/${gaterwayId}`, {
             method: 'DELETE',
         })
+            // Check if the server could add the new gaterway to the DB
             .then(response => {
                 if (response.ok) {
                     return response.json();
                 }
                 throw response;
             })
+            // Server OK, now we can remove the Gaterway from our Context Store
             .then((gaterwayDeletedMessage: fetchDeleteGaterwayMessage) => {
                 userNotification.description = gaterwayDeletedMessage.message;
 
@@ -110,6 +115,7 @@ function GaterwaysList() {
                 console.log(error);
             })
             .finally(() => {
+                // Trigger the Dialog modal to inform the user about a error or a succesful operation
                 dialogModalContext.setDialogData(userNotification);
                 dialogModalContext.setShowDialog(true);
             });

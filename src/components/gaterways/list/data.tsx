@@ -1,8 +1,8 @@
 import { ServerIcon, AtSymbolIcon } from '@heroicons/react/24/solid';
-import { devices, gaterways } from '../../type';
+import { gaterways } from '../../../appTypes';
 
 type Props = {
-    gaterway: gaterways & { devices: devices[] };
+    gaterway: gaterways;
 };
 
 export default function ListData(props: Props) {
@@ -26,7 +26,7 @@ export default function ListData(props: Props) {
                     aria-hidden='true'
                 />
                 <span className='truncate text-sm font-medium text-gray-500 group-hover:text-gray-900'>
-                    {`${props.gaterway.devices.length} Peripheral device added`}
+                    {`${props.gaterway.devices?.length ?? 0} Peripheral device added`}
                 </span>
 
                 <span className='truncate text-sm font-medium text-gray-500 group-hover:text-gray-900'></span>
