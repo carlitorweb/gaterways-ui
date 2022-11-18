@@ -1,10 +1,10 @@
-import { createContext, Dispatch, useReducer } from 'react';
+import { createContext, Dispatch } from 'react';
+import { useImmerReducer } from 'use-immer';
 import { childrenProps, fetchGetAllGaterwaysData, GaterwayDispatchAction } from '../appTypes';
 
 // Initital value of the store
 const initialState: fetchGetAllGaterwaysData = {
     message: '',
-    totalOfGaterways: 0,
     data: [],
 };
 
@@ -17,47 +17,43 @@ const GaterwayStoreDispatchContext = createContext<Dispatch<GaterwayDispatchActi
 /**
  * @description Reducer to manage the state
  *
- * @param gaterways Current (previous) state of our context
+ * @param draft A clone (free to mutate) of the current (previous) state of our context
  * @param action The action and the data for update our current state or
  * to get a specific information from our context-store, like the total of gaterways stored
  * @returns A object
  */
-function gaterwaysReducer(
-    gaterways: fetchGetAllGaterwaysData,
-    action: GaterwayDispatchAction
-) {
+function gaterwaysReducer(draft: fetchGetAllGaterwaysData, action: GaterwayDispatchAction) {
     switch (action.type) {
         case 'ADD_NEW_LIST_GATERWAYS':
             if (action.fetchedData) {
-                return {
-                    ...gaterways,
-                    data: action.fetchedData.data,
-                    message: action.fetchedData.message,
-                    totalOfGaterways: action.fetchedData.totalOfGaterways,
-                };
+                return (draft = action.fetchedData);
             }
+            break;
 
         case 'ADD_NEW_GATERWAY':
             if (action.newGaterwayCreated) {
-                return {
-                    ...gaterways,
-                    data: [...gaterways.data, action.newGaterwayCreated],
-                    message: '',
-                    totalOfGaterways: gaterways.totalOfGaterways++,
-                };
+                draft.data.push(action.newGaterwayCreated);
             }
+            break;
 
         case 'REMOVE_GATERWAY':
-            return {
-                ...gaterways,
-                data: gaterways.data.filter(gater => {
+            if (action.gaterwayId) {
+                draft.data = draft.data.filter(gater => {
                     return gater.id !== action.gaterwayId;
-                }),
-                message:
-                    action.gaterwayDeletedMessage?.message ??
-                    'The result message could not be loaded',
-                totalOfGaterways: gaterways.totalOfGaterways--,
-            };
+                });
+            }
+            break;
+
+        case 'ADD_NEW_DEVICE':
+            if (action.newDeviceCreated !== undefined) {
+                const index = draft.data.findIndex(
+                    gaterway =>
+                        action.newDeviceCreated &&
+                        gaterway.id === action.newDeviceCreated.gaterwayId
+                );
+                draft.data[index].devices?.push(action.newDeviceCreated) ?? null;
+            }
+            break;
 
         default:
             return initialState;
@@ -68,7 +64,7 @@ function gaterwaysReducer(
  * Main component
  */
 const GaterwayStoreProvider = ({ children }: childrenProps) => {
-    const [gaterways, dispatch] = useReducer(gaterwaysReducer, initialState);
+    const [gaterways, dispatch] = useImmerReducer(gaterwaysReducer, initialState);
 
     return (
         <GaterwayStoreContext.Provider value={gaterways}>

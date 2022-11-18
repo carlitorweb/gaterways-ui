@@ -23,8 +23,7 @@ export interface devices {
 
 export type fetchGetAllGaterwaysData = {
     message: string;
-    totalOfGaterways: number;
-    data: gaterways[] | [];
+    data: gaterways[];
 };
 
 // Gaterway Store context reducer
@@ -32,19 +31,15 @@ export enum actions {
     ADD_NEW_LIST_GATERWAYS = 'ADD_NEW_LIST_GATERWAYS',
     REMOVE_GATERWAY = 'REMOVE_GATERWAY',
     ADD_NEW_GATERWAY = 'ADD_NEW_GATERWAY',
+    ADD_NEW_DEVICE = 'ADD_NEW_DEVICE',
 }
 export interface GaterwayDispatchAction {
     type: actions;
     fetchedData?: fetchGetAllGaterwaysData;
     gaterwayId?: string;
-    gaterwayDeletedMessage?: fetchDeleteGaterwayMessage;
     newGaterwayCreated?: gaterways;
+    newDeviceCreated?: devices;
 }
-
-// Message we got when try to delete a gaterway
-export type fetchDeleteGaterwayMessage = {
-    message: string;
-};
 
 // Dialog modal notification
 export type DialogDataType = {

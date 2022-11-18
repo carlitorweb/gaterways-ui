@@ -1,18 +1,15 @@
 import { Dialog } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useContext, useRef, useState } from 'react';
-import { DialogDataType } from '../../../appTypes';
+import { actions, devices, DialogDataType } from '../../../appTypes';
 import DialogModalContext from '../../../context/DialogModal';
+import { GaterwayStoreDispatchContext } from '../../../context/gaterwayStore';
 import Slideover from '../../../helpers/slideover';
 import Toggle from '../../../helpers/toggle';
 
 interface Props {
     sn: string;
     id: string;
-}
-
-interface fetchAddedDevice {
-    message: string;
 }
 
 /**
@@ -40,6 +37,9 @@ export default function AddDevice(props: Props) {
         vendor: '',
     });
 
+    // Gaterway store Context/Provider
+    const gaterwaysDispatch = useContext(GaterwayStoreDispatchContext);
+
     // Our Dialog provider context
     const dialogModalContext = useContext(DialogModalContext);
 
@@ -62,45 +62,61 @@ export default function AddDevice(props: Props) {
     const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        const userNotification: DialogDataType = {
+            title: 'Attempt to create a new Device',
+            description: '',
+            isError: false,
+        };
+
         const deviceBody = {
             vendor: form.vendor,
             status: deviceStatus.current,
             gaterwayId: props.id,
         };
 
-        (async () => {
-            const response = await fetch(`http://127.0.0.1:8000/devices`, {
-                method: 'POST',
-                body: JSON.stringify(deviceBody),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+        fetch(`http://127.0.0.1:8000/devices`, {
+            method: 'POST',
+            body: JSON.stringify(deviceBody),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw response;
+            })
+            .then(resp => {
+                const newDeviceCreated: devices = {
+                    ...deviceBody,
+                    id: resp.deviceCreatedId,
+                    createdAt: resp.deviceCreatedDate,
+                };
+
+                // Add the new gaterway to the context-store state
+                gaterwaysDispatch &&
+                    gaterwaysDispatch({
+                        type: actions.ADD_NEW_DEVICE,
+                        newDeviceCreated,
+                    });
+
+                // Prepare the notification message for the user
+                userNotification.description = resp.message;
+            })
+            .catch(error => {
+                userNotification.isError = true;
+                userNotification.description = error.message;
+                console.log(error);
+            })
+            .finally(() => {
+                // Trigger the Dialog modal to inform the user about a error or a succesful operation
+                dialogModalContext.setDialogData(userNotification);
+                dialogModalContext.setShowDialog(true);
             });
 
-            const fetchedDelateMessage: fetchAddedDevice = await response.json();
-
-            return fetchedDelateMessage;
-        })().then(reponse => {
-            // Show a notification to the user about the device was added succefully
-            if (dialogModalContext.showDialog) {
-                // Close any Dialog we could have opened
-                dialogModalContext.setShowDialog(false);
-            }
-
-            /**
-             * Add the content we will show to the user, and then show the dialog
-             *
-             * @todo Move this to a separate component, will save me some lines of codes
-             * each time I need use it
-             *  */
-            const userNotification: DialogDataType = {
-                title: 'Attempt to create a new Peripheral device',
-                description: reponse.message,
-                isError: false,
-            };
-            dialogModalContext.setDialogData(userNotification);
-            dialogModalContext.setShowDialog(true);
-        });
+        //dialogModalContext.setDialogData(userNotification);
+        //dialogModalContext.setShowDialog(true);
     };
     return (
         <>

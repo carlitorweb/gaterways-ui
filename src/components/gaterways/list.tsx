@@ -7,12 +7,7 @@ import {
 import ListActions from './list/action';
 import ListData from './list/data';
 import SortOptionsMenu from './list/sort';
-import {
-    actions,
-    DialogDataType,
-    fetchDeleteGaterwayMessage,
-    fetchGetAllGaterwaysData,
-} from '../../appTypes';
+import { actions, DialogDataType, fetchGetAllGaterwaysData } from '../../appTypes';
 import DialogModalContext from '../../context/DialogModal';
 
 /**
@@ -95,15 +90,14 @@ function GaterwaysList() {
                 throw response;
             })
             // Server OK, now we can remove the Gaterway from our Context Store
-            .then((gaterwayDeletedMessage: fetchDeleteGaterwayMessage) => {
-                userNotification.description = gaterwayDeletedMessage.message;
+            .then(resp => {
+                userNotification.description = resp.message;
 
                 // Delete the gaterway from the context-store state
                 gaterwaysDispatch &&
                     gaterwaysDispatch({
                         type: actions.REMOVE_GATERWAY,
                         gaterwayId,
-                        gaterwayDeletedMessage,
                     });
             })
             .catch((error: Response) => {

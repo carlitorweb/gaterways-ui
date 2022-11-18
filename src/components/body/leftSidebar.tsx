@@ -71,7 +71,7 @@ function LeftSidebar() {
                                     />
 
                                     <span className='text-sm font-medium text-gray-500'>
-                                        {gaterways.totalOfGaterways} Gaterways stored
+                                        {gaterways.data.length} Gaterways stored
                                     </span>
                                 </div>
                             </div>
