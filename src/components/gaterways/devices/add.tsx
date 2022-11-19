@@ -16,11 +16,16 @@ interface Props {
  * @description Component for render the Form for add a new device to the selected Gaterway
  *
  * @actions
- * Store the new Device
+ ** Store the new Device
  *
- * Show a notification that the Device was store successfully or a error otherwise.
+ ** Show a notification that the Device was store successfully or a error otherwise.
  *
- * Re-render the Gaterways list for show the changes
+ ** Re-render the Gaterways list for show the changes
+ *
+ ** Check before add the new device, the gaterway have less than 10 device stored
+ *
+ * @param Props.sn string -- Serial  of the gaterway to where we will add the new device
+ * @param Props.id string -- ID of the gaterway
  *
  * @todo Move the Form component outside the AddDevice component, in this way
  * we load just one Form component, and we just need change the Gaterway SN and ID linked
@@ -43,7 +48,7 @@ export default function AddDevice(props: Props) {
     // Our Dialog provider context
     const dialogModalContext = useContext(DialogModalContext);
 
-    // Save the status of the toggle component
+    // Save the device status of the toggle component
     const deviceStatus = useRef(false);
 
     // Save the data of the Form to later store it
@@ -57,7 +62,6 @@ export default function AddDevice(props: Props) {
     /**
      * Store the new Device and re-render our gaterway list component
      *
-     * @todo Catch the error exceptions of Fetch()
      * */
     const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

@@ -20,17 +20,18 @@ REST service for storing and share information about Gaterways
 -   [x] Display the amount of Peripheral Device each Gaterway stored have
 -   [x] Display the amount of Peripheral Device each Gaterway stored have
 -   [x] Provide a UI for the app
+-   [x] Check a Gaterway not have more than 10 Peripheral Device before add a new one to him
 
 ## Requirements tasks not completed due time
 
 -   [ ] Display information about all Peripheral Device stored
--   [ ] Check a Gaterway not have more than 10 Peripheral Device before add a new one to him
 -   [ ] Delete one or more Peripheral Device from a Gaterway
 -   [ ] Meaningful Unit tests (Jest was the choosen tool)
 -   [ ] An automated build
 
 ## To-do to improve
 
+-   [x] useImmerReducer for manage the main context-store
 -   [ ] Use React Query for our Fetch (https://tanstack.com/)
 
 ## Installation

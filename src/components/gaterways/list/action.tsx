@@ -7,6 +7,8 @@ type Props = {
 };
 
 export default function ListActions(props: Props) {
+    const allowNewDevices =
+        props.gaterway.devices && props.gaterway.devices.length < 10 ? true : false;
     return (
         <div className='flex-shrink-0 flex-col items-end space-y-3 sm:flex'>
             <div className='flex space-x-2 text-sm'>
@@ -24,10 +26,15 @@ export default function ListActions(props: Props) {
                     className='rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
                     Remove
                 </button>
-                <span className='text-gray-300' aria-hidden='true'>
-                    |
-                </span>
-                <AddDevice sn={props.gaterway.sn} id={props.gaterway.id} />
+                {allowNewDevices && (
+                    <>
+                        <span className='text-gray-300' aria-hidden='true'>
+                            |
+                        </span>
+
+                        <AddDevice sn={props.gaterway.sn} id={props.gaterway.id} />
+                    </>
+                )}
             </div>
         </div>
     );
